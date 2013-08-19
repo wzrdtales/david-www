@@ -77,6 +77,10 @@ module.exports.getInfo = function(manifest, options, callback) {
 						}
 					};
 				
+				var allPinned = depNames.reduce(function (allPinned, depName) {
+					return isPinned(depName) ? allPinned : false
+				}, true)
+				
 				var depList = depNames.map(function(depName) {
 					
 					// Lets disprove this
