@@ -40,6 +40,7 @@
     "extract": "^1.0.0",
     "github": "^0.2.1",
     "github-url": "^1.1.0",
+    "gitlab": "^1.2.0",
     "handlebars": "^2.0.0",
     "level": "^0.18.0",
     "level-session": "^0.3.1",
