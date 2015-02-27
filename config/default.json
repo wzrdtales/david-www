@@ -16,12 +16,10 @@
     },
     "token": null
   },
-  "github": {
+  "gitlab": {
     "api": {
       "url": "https://somewhere"
     },
-    "protocol": "https",
-    "host": "github.com",
     "oauth": {
       "id": null,
       "secret": null
