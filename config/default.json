@@ -16,6 +16,18 @@
     },
     "token": null
   },
+  "github": {
+    "api": {
+      "url": "https://somewhere"
+    },
+    "protocol": "https",
+    "host": "github.com",
+    "oauth": {
+      "id": null,
+      "secret": null
+    },
+    "token": null
+  },
   "npm": {
     "hostname": "https://www.npmjs.com",
     "options": {
