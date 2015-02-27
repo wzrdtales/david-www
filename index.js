@@ -77,6 +77,35 @@ app.get("/:user/:repo.svg",                    svgStatusBadge)
 app.get("/:user/:repo.png",                    statusBadge)
 app.get("/:user/:repo",                        statusPage)
 app.get("/:user",                              profilePage)
+
+app.get("/r/:remote/:user/:repo/dev-info.json",          devInfo)
+app.get("/r/:remote/:user/:repo/info.json",              info)
+app.get("/r/:remote/:user/:repo/peer-info.json",         peerInfo)
+app.get("/r/:remote/:user/:repo/optional-info.json",     optionalInfo)
+app.get("/r/:remote/:user/:repo/graph.json",             dependencyGraph)
+app.get("/r/:remote/:user/:repo/dev-graph.json",         devDependencyGraph)
+app.get("/r/:remote/:user/:repo/peer-graph.json",        peerDependencyGraph)
+app.get("/r/:remote/:user/:repo/optional-graph.json",    optionalDependencyGraph)
+app.get("/r/:remote/:user/:repo/rss.xml",                rssFeed)
+app.get("/r/:remote/:user/:repo/dev-rss.xml",            devRssFeed)
+app.get("/r/:remote/:user/:repo/status.png",             statusBadge)
+app.get("/r/:remote/:user/:repo/status@2x.png",          retinaStatusBadge)
+app.get("/r/:remote/:user/:repo/status.svg",             svgStatusBadge)
+app.get("/r/:remote/:user/:repo/dev-status.png",         devStatusBadge)
+app.get("/r/:remote/:user/:repo/dev-status@2x.png",      retinaDevStatusBadge)
+app.get("/r/:remote/:user/:repo/dev-status.svg",         svgDevStatusBadge)
+app.get("/r/:remote/:user/:repo/peer-status.png",        peerStatusBadge)
+app.get("/r/:remote/:user/:repo/peer-status@2x.png",     retinaPeerStatusBadge)
+app.get("/r/:remote/:user/:repo/peer-status.svg",        svgPeerStatusBadge)
+app.get("/r/:remote/:user/:repo/optional-status.png",    optionalStatusBadge)
+app.get("/r/:remote/:user/:repo/optional-status@2x.png", retinaOptionalStatusBadge)
+app.get("/r/:remote/:user/:repo/optional-status.svg",    svgOptionalStatusBadge)
+app.get("/r/:remote/:user/:repo@2x.png",                 retinaStatusBadge)
+app.get("/r/:remote/:user/:repo.svg",                    svgStatusBadge)
+app.get("/r/:remote/:user/:repo.png",                    statusBadge)
+app.get("/r/:remote/:user/:repo",                        statusPage)
+app.get("/r/:remote/:user",                              profilePage)
+
 app.get("/",                                   indexPage)
 
 /**
@@ -178,7 +207,7 @@ function profilePage (req, res) {
       authToken = sessionData["session/access-token"]
     }
 
-    profile.get(req.params.user, authToken, function (er, data) {
+    profile.get(req.params.user, req.params.remote, authToken, function (er, data) {
       if (errors.happened(er, req, res, "Failed to get profile data")) {
         return
       }
@@ -252,7 +281,7 @@ function sendStatusBadge (req, res, opts) {
   res.setHeader("Cache-Control", "no-cache")
 
   req.session.get("session/access-token", function (err, authToken) {
-    manifest.getManifest(req.params.user, req.params.repo, authToken, function (err, manifest) {
+    manifest.getManifest(req.params.user, req.params.repo, req.params.remote, authToken, function (err, manifest) {
       if (err) {
         return res.status(404).sendFile(badgePath(getDepsType(opts), "unknown", opts.retina, req.query.style, opts.extension))
       }
@@ -318,7 +347,7 @@ function retinaOptionalStatusBadge (req, res) {
 
 function sendDependencyGraph (req, res, opts) {
   req.session.get("session/access-token", function (err, authToken) {
-    manifest.getManifest(req.params.user, req.params.repo, authToken, function (er, manifest) {
+    manifest.getManifest(req.params.user, req.params.repo, req.params.remote, authToken, function (er, manifest) {
       if (errors.happened(er, req, res, "Failed to get package.json")) {
         return
       }
@@ -365,7 +394,7 @@ function optionalDependencyGraph (req, res) {
 
 function buildRssFeed (req, res, dev) {
   req.session.get("session/access-token", function (err, authToken) {
-    manifest.getManifest(req.params.user, req.params.repo, authToken, function (er, manifest) {
+    manifest.getManifest(req.params.user, req.params.repo, req.params.remote, authToken, function (er, manifest) {
       if (errors.happened(er, req, res, "Failed to get package.json")) {
         return
       }
@@ -427,7 +456,7 @@ function withManifestAndInfo (req, res, opts, cb) {
   }
 
   req.session.get("session/access-token", function (err, authToken) {
-    manifest.getManifest(req.params.user, req.params.repo, authToken, function (er, manifest) {
+    manifest.getManifest(req.params.user, req.params.repo, req.params.remote, authToken, function (er, manifest) {
       if (errors.happened(er, req, res, "Failed to get package.json")) {
         return
       }

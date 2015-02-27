@@ -12,6 +12,7 @@ var events = require("events")
   , config = require("config")
   , registry = require("./registry")
   , github = require("./github")
+  , gitlab = require("./gitlab")
   , githubUrl = require("github-url")
   , depDiff = require("dep-diff")
   , batch = require("./batch")()
@@ -45,7 +46,7 @@ function parseManifest (body) {
   }
 }
 
-exports.getManifest = function (user, repo, authToken, cb) {
+exports.getManifest = function (user, repo, remote, authToken, cb) {
   var manifest = manifests[user] ? manifests[user][repo] : null
 
   if (manifest && !manifest.private && manifest.expires > new Date()) {
@@ -53,9 +54,11 @@ exports.getManifest = function (user, repo, authToken, cb) {
     return cb(null, JSON.parse(JSON.stringify(manifest.data)))
   }
 
-  var gh = github.getInstance(authToken)
+  remote = (remote === "gitlab") ? gitlab : github;
+
+  var gh = remote.getInstance(authToken)
     , batchKey = [user, repo, authToken].join("-")
-  
+
   if (batch.exists(batchKey)) {
     return batch.push(batchKey, cb)
   }
@@ -94,7 +97,7 @@ exports.getManifest = function (user, repo, authToken, cb) {
       // Get repo info so we can determine private/public status
       gh.repos.get({user: user, repo: repo}, onGetRepo)
     }
-    
+
     function onGetRepo (er, repoData) {
       if (er) {
         console.error("Failed to get repo data", user, repo, er)
@@ -107,7 +110,7 @@ exports.getManifest = function (user, repo, authToken, cb) {
 
       manifests[user] = manifests[user] || {}
       manifests[user][repo] = manifest
-      
+
       batch.call(batchKey, function (cb) {
         cb(null, manifest.data)
       })

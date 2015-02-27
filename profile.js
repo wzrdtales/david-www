@@ -14,7 +14,7 @@ var async = require("async")
  * @param {Number} [options.pageSize] Page size, max 100
  * @param {Function} cb Callback function
  */
-function getRepos (user, authToken, options, cb) {
+function getRepos (user, remote, authToken, options, cb) {
   // Allow callback to be passed as second parameter
   if (!cb) {
     cb = options
@@ -37,7 +37,7 @@ function getRepos (user, authToken, options, cb) {
           // Maybe another page?
           options.page++
 
-          getRepos(user, authToken, options, cb)
+          getRepos(user, remote, authToken, options, cb)
 
         } else {
           cb(null, options.repos)
@@ -59,9 +59,9 @@ function getRepos (user, authToken, options, cb) {
  * @param {String} authToken OAuth access token or null
  * @returns {Function}
  */
-function createGetInfoTask (user, repo, authToken) {
+function createGetInfoTask (user, remote, repo, authToken) {
   return function (cb) {
-    manifest.getManifest(user, repo.name, authToken, function (er, manifest) {
+    manifest.getManifest(user, repo.name, remote, authToken, function (er, manifest) {
       // This is fine - perhaps the repo doesn"t have a package.json
       if (er) return cb()
 
@@ -78,14 +78,14 @@ function createGetInfoTask (user, repo, authToken) {
  * @param {String} authToken OAuth access token or null
  * @param {Function} cb Passed array of objects with properties repo, info, manifest.
  */
-module.exports.get = function (user, authToken, cb) {
-  getRepos(user, authToken, function (er, repos) {
+module.exports.get = function (user, remote, authToken, cb) {
+  getRepos(user, remote, authToken, function (er, repos) {
     if (er) return cb(er)
 
     // Get repository status information
     async.parallel(
       repos.map(function (repo) {
-        return createGetInfoTask(user, repo, authToken)
+        return createGetInfoTask(user, remote, repo, authToken)
       }),
       function (er, data) {
         if (er) return cb(er)

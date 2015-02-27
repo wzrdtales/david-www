@@ -12,7 +12,6 @@ var internals = {
 
 function gitlab(apiOptions) {
 
-    console.log(apiOptions);
     internals.api = new GitLabApi(apiOptions);
 }
 
