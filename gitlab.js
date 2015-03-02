@@ -31,7 +31,7 @@ gitlab.prototype = {
             internals.api.projects.repository.showFile({
 
                 projectId: options.user + "/" + options.repo,
-                ref: "develop",
+                ref: config.gitlab.defaultBranch,
                 file_path: options.path
             }, function(file) {
 

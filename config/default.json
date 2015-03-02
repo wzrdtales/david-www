@@ -24,7 +24,8 @@
       "id": null,
       "secret": null
     },
-    "token": null
+    "token": null,
+    "defaultBranch": "master"
   },
   "npm": {
     "hostname": "https://www.npmjs.com",
