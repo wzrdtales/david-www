@@ -1,3 +1,13 @@
+if( process.env.http_proxy ) {
+
+  const url = require('url');
+  const proxy = url.parse(process.env.http_proxy);
+  require('global-tunnel').initialize({
+    host: proxy.hostname,
+    port: proxy.port
+  });
+}
+
 const path = require('path')
 const express = require('express')
 const compress = require('compression')
@@ -21,6 +31,7 @@ const feed = require('./lib/feed')(npm, config.npm, config.site)
 const stats = require('./lib/stats')(registry, manifest)
 
 const app = express()
+
 
 app.engine('html', consolidate.handlebars)
 app.set('view engine', 'html')

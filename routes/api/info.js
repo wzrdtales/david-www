@@ -24,4 +24,28 @@ module.exports = (app, manifest, brains) => {
       res.json(info)
     })
   })
+
+  app.get('/r/:remote/:user/:repo/:ref?/dev-info.json', (req, res) => {
+    withManifestAndInfo(req, res, {driver: req.params.remote, dev: true}, (manifest, info) => {
+      res.json(info)
+    })
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/info.json', (req, res) => {
+    withManifestAndInfo(req, res, {driver: req.params.remote}, (manifest, info) => {
+      res.json(info)
+    })
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/peer-info.json', (req, res) => {
+    withManifestAndInfo(req, res, {driver: req.params.remote, peer: true}, (manifest, info) => {
+      res.json(info)
+    })
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/optional-info.json', (req, res) => {
+    withManifestAndInfo(req, res, {driver: req.params.remote, optional: true}, (manifest, info) => {
+      res.json(info)
+    })
+  })
 }

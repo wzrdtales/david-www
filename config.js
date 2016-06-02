@@ -2,6 +2,17 @@ module.exports = require('rc')('david', {
   brains: {
     cacheTime: 86400000
   },
+  gitlab: {
+    api: {
+      url: "https://yourgitlaburl"
+    },
+    oauth: {
+      id: null,
+      secret: null
+    },
+    token: "token",
+    defaultBranch: "master"
+  },
   github: {
     api: {
       version: '3.0.0',

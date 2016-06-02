@@ -18,13 +18,29 @@ module.exports = (app, graph, manifest) => {
     sendDependencyGraph(req, res, {optional: true})
   })
 
+  app.get('/r/:remote/:user/:repo/:ref?/graph.json', (req, res) => {
+    sendDependencyGraph(req, res, {driver: req.params.remote})
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/dev-graph.json', (req, res) => {
+    sendDependencyGraph(req, res, {driver: req.params.remote, dev: true})
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/peer-graph.json', (req, res) => {
+    sendDependencyGraph(req, res, {driver: req.params.remote, peer: true})
+  })
+
+  app.get('/r/:remote/:user/:repo/:ref?/optional-graph.json', (req, res) => {
+    sendDependencyGraph(req, res, {driver: req.params.remote, optional: true})
+  })
+
   function sendDependencyGraph (req, res, opts) {
     req.session.get('session/access-token', (err, authToken) => {
       if (errors.happened(err, req, res, 'Failed to get session access token')) {
         return
       }
 
-      manifest.getManifest(req.params.user, req.params.repo, req.query.path, req.params.ref, authToken, (err, manifest) => {
+      manifest.getManifest(req.params.user, req.params.repo, req.query.path, req.params.ref, authToken, opts, (err, manifest) => {
         if (errors.happened(err, req, res, 'Failed to get package.json')) {
           return
         }
