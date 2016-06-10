@@ -169,7 +169,7 @@ module.exports = function (app, manifest, brains) {
         return res.status(500).sendFile(getBadgePath('unknown', badgePathOpts), sendFileOpts, sendFileCb)
       }
 
-      manifest.getManifest(req.params.user, req.params.repo, req.query.path, req.params.ref, authToken, (err, manifest) => {
+      manifest.getManifest(req.params.user, req.params.repo, req.query.path, req.params.ref, authToken, opts, (err, manifest) => {
         if (err) {
           console.error('Failed to get manifest', req.params.user, req.params.repo, req.query.path, req.params.ref, authToken, err)
           return res.status(404).sendFile(getBadgePath('unknown', badgePathOpts), sendFileOpts, sendFileCb)
